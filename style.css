@@ -1,0 +1,661 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #1a1a2e;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* 배경 애니메이션 컨테이너 */
+.bg-animation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    overflow: hidden;
+}
+
+/* 움직이는 그라데이션 배경 */
+.bg-gradient {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        45deg,
+        #667eea 0%,
+        #764ba2 20%,
+        #f093fb 40%,
+        #667eea 60%,
+        #764ba2 80%,
+        #667eea 100%
+    );
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; transform: rotate(0deg); }
+    25% { background-position: 100% 50%; }
+    50% { background-position: 100% 100%; transform: rotate(180deg); }
+    75% { background-position: 0% 100%; }
+    100% { background-position: 0% 50%; transform: rotate(360deg); }
+}
+
+/* 파티클 캔버스 */
+#bg-particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+/* 오버레이 효과 */
+.bg-animation::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(
+        ellipse at center,
+        transparent 0%,
+        rgba(0, 0, 0, 0.3) 100%
+    );
+    z-index: 2;
+}
+
+#confetti-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+.screen {
+    display: none;
+    width: 100%;
+    max-width: 800px;
+    position: relative;
+    z-index: 10;
+}
+
+.screen.active {
+    display: block;
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.container {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    text-align: center;
+}
+
+.title {
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 30px;
+    font-weight: 700;
+}
+
+.btn {
+    padding: 15px 40px;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.winner-name {
+    transition: all 0.1s ease;
+}
+
+.winner-name.slot-spinning {
+    color: #999;
+    transform: scale(1.05);
+}
+
+/* 슬롯머신 컨테이너 */
+.slot-container {
+    margin-top: 30px;
+    position: relative;
+    height: 8rem;
+    overflow: hidden;
+    border-radius: 15px;
+    background: rgba(245, 245, 245, 0.9);
+    min-height: 8rem;
+    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.05);
+}
+
+.slot-window {
+    position: relative;
+    height: 8rem;
+    overflow: hidden;
+    border-radius: 12px;
+}
+
+/* 상단/하단 페이드 그라데이션 */
+.slot-window::before,
+.slot-window::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2rem;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.slot-window::before {
+    top: 0;
+    background: linear-gradient(to bottom, rgba(245, 245, 245, 1) 0%, rgba(245, 245, 245, 0) 100%);
+}
+
+.slot-window::after {
+    bottom: 0;
+    background: linear-gradient(to top, rgba(245, 245, 245, 1) 0%, rgba(245, 245, 245, 0) 100%);
+}
+
+.prize-slot {
+    position: relative;
+    will-change: transform;
+    transition: transform 0.05s linear;
+    transform: translateY(0);
+}
+
+.prize-item {
+    height: 4rem;
+    min-height: 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: #666;
+    font-weight: 500;
+    padding: 0 30px;
+    white-space: nowrap;
+    line-height: 4rem;
+    transition: color 0.2s ease, font-size 0.2s ease, opacity 0.2s ease, font-weight 0.2s ease;
+}
+
+/* 스크롤 중에는 모든 항목 동일하게 표시 (기본 스타일) */
+
+.prize-item.far {
+    color: #999;
+    font-size: 1.8rem;
+    opacity: 0.6;
+}
+
+.prize-item.near {
+    color: #777;
+    font-size: 1.9rem;
+    opacity: 0.8;
+}
+
+.prize-item.center {
+    color: #333;
+    font-weight: 700;
+    font-size: 2.5rem;
+    opacity: 1;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.prize-slot.spinning {
+    /* JavaScript에서 transform을 직접 제어하므로 CSS 애니메이션 제거 */
+}
+
+/* 다음 추첨자 정보 */
+.next-participant-info {
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 12px;
+    padding: 16px 24px;
+    margin-top: 25px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    text-align: center;
+}
+
+.next-label {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 6px;
+    font-weight: 500;
+}
+
+.next-participant-name {
+    font-size: 1.5rem;
+    color: #555;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* 진행 화면 */
+.progress-info {
+    margin-bottom: 30px;
+}
+
+#progress-text {
+    font-size: 1.5rem;
+    color: #666;
+    font-weight: 600;
+}
+
+.winner-display {
+    margin: 40px 0;
+    min-height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.winner-card {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    border-radius: 25px;
+    padding: 80px 60px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+    min-width: 450px;
+    max-width: 600px;
+    width: 90%;
+    opacity: 0;
+    animation: cardAppear 0.8s ease-out forwards;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.5s ease;
+}
+
+.winner-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transform: rotate(45deg);
+    animation: shine 2s infinite;
+}
+
+/* 1등상 카드 - 골드/핑크 화려한 효과 */
+.winner-card.grade-1 {
+    background: linear-gradient(135deg, #fff6e5 0%, #ffe4e1 30%, #ffd700 70%, #ffb347 100%);
+    box-shadow: 
+        0 0 30px rgba(255, 215, 0, 0.6),
+        0 0 60px rgba(255, 105, 180, 0.4),
+        0 15px 40px rgba(0, 0, 0, 0.3),
+        inset 0 0 30px rgba(255, 255, 255, 0.5);
+    border: 3px solid rgba(255, 215, 0, 0.8);
+    animation: cardAppear1st 1s ease-out forwards, pulse1st 1.5s ease-in-out infinite;
+}
+
+.winner-card.grade-1::before {
+    background: linear-gradient(45deg, transparent, rgba(255, 215, 0, 0.6), rgba(255, 255, 255, 0.8), rgba(255, 215, 0, 0.6), transparent);
+    animation: shine1st 1.5s infinite;
+}
+
+.winner-card.grade-1::after {
+    content: '🎉';
+    position: absolute;
+    font-size: 4rem;
+    top: 10px;
+    right: 20px;
+    animation: bounce 0.5s ease infinite alternate;
+}
+
+/* 2등상 카드 - 실버/블루 효과 */
+.winner-card.grade-2 {
+    background: linear-gradient(135deg, #e8f4f8 0%, #b8d4e3 30%, #c0c0c0 70%, #87ceeb 100%);
+    box-shadow: 
+        0 0 25px rgba(135, 206, 235, 0.5),
+        0 0 50px rgba(192, 192, 192, 0.4),
+        0 15px 40px rgba(0, 0, 0, 0.25);
+    border: 3px solid rgba(192, 192, 192, 0.8);
+    animation: cardAppear2nd 0.9s ease-out forwards, pulse2nd 2s ease-in-out infinite;
+}
+
+.winner-card.grade-2::before {
+    background: linear-gradient(45deg, transparent, rgba(192, 192, 192, 0.5), rgba(255, 255, 255, 0.7), rgba(135, 206, 235, 0.5), transparent);
+    animation: shine2nd 1.8s infinite;
+}
+
+.winner-card.grade-2::after {
+    content: '🎊';
+    position: absolute;
+    font-size: 3rem;
+    top: 10px;
+    right: 20px;
+    animation: bounce 0.6s ease infinite alternate;
+}
+
+/* 3등상 카드 - 브론즈/오렌지 효과 */
+.winner-card.grade-3 {
+    background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 30%, #cd7f32 70%, #ff8c00 100%);
+    box-shadow: 
+        0 0 20px rgba(205, 127, 50, 0.5),
+        0 0 40px rgba(255, 140, 0, 0.3),
+        0 15px 40px rgba(0, 0, 0, 0.2);
+    border: 3px solid rgba(205, 127, 50, 0.8);
+    animation: cardAppear3rd 0.85s ease-out forwards;
+}
+
+.winner-card.grade-3::before {
+    background: linear-gradient(45deg, transparent, rgba(205, 127, 50, 0.4), rgba(255, 255, 255, 0.6), rgba(255, 140, 0, 0.4), transparent);
+    animation: shine3rd 2s infinite;
+}
+
+.winner-card.grade-3::after {
+    content: '✨';
+    position: absolute;
+    font-size: 2.5rem;
+    top: 10px;
+    right: 20px;
+    animation: bounce 0.7s ease infinite alternate;
+}
+
+/* 일반 상품 카드 */
+.winner-card.grade-0 {
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4ffe4 50%, #c3cfe2 100%);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes shine {
+    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+@keyframes shine1st {
+    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+@keyframes shine2nd {
+    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+@keyframes shine3rd {
+    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+@keyframes cardAppear {
+    from { opacity: 0; transform: scale(0.8) translateY(20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes cardAppear1st {
+    0% { opacity: 0; transform: scale(0.5) translateY(50px) rotate(-5deg); }
+    50% { transform: scale(1.1) translateY(-10px) rotate(2deg); }
+    100% { opacity: 1; transform: scale(1) translateY(0) rotate(0deg); }
+}
+
+@keyframes cardAppear2nd {
+    0% { opacity: 0; transform: scale(0.6) translateY(40px); }
+    60% { transform: scale(1.05) translateY(-5px); }
+    100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes cardAppear3rd {
+    0% { opacity: 0; transform: scale(0.7) translateY(30px); }
+    100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes pulse1st {
+    0%, 100% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.6), 0 0 60px rgba(255, 105, 180, 0.4), 0 15px 40px rgba(0, 0, 0, 0.3), inset 0 0 30px rgba(255, 255, 255, 0.5); }
+    50% { box-shadow: 0 0 50px rgba(255, 215, 0, 0.8), 0 0 80px rgba(255, 105, 180, 0.6), 0 20px 50px rgba(0, 0, 0, 0.35), inset 0 0 40px rgba(255, 255, 255, 0.7); }
+}
+
+@keyframes pulse2nd {
+    0%, 100% { box-shadow: 0 0 25px rgba(135, 206, 235, 0.5), 0 0 50px rgba(192, 192, 192, 0.4), 0 15px 40px rgba(0, 0, 0, 0.25); }
+    50% { box-shadow: 0 0 40px rgba(135, 206, 235, 0.7), 0 0 70px rgba(192, 192, 192, 0.5), 0 18px 45px rgba(0, 0, 0, 0.3); }
+}
+
+@keyframes bounce {
+    from { transform: translateY(0); }
+    to { transform: translateY(-10px); }
+}
+
+.grade-badge {
+    display: inline-block;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: white;
+    min-height: 36px;
+    min-width: 60px;
+    visibility: hidden;
+}
+
+.grade-badge.visible {
+    visibility: visible;
+}
+
+.grade-badge.grade-1 {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
+}
+
+.grade-badge.grade-2 {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+}
+
+.grade-badge.grade-3 {
+    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    box-shadow: 0 4px 15px rgba(67, 233, 123, 0.4);
+}
+
+.grade-badge.grade-0 {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    box-shadow: 0 4px 15px rgba(250, 112, 154, 0.4);
+}
+
+.winner-name {
+    font-size: 3.5rem;
+    color: #333;
+    margin-bottom: 20px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.prize-name {
+    font-size: 2rem;
+    color: #666;
+    font-weight: 500;
+    margin-top: 10px;
+}
+
+/* 결과 화면 */
+.results-container {
+    margin: 30px 0;
+    text-align: left;
+}
+
+.result-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    border-radius: 15px;
+    background: #f8f9fa;
+}
+
+.result-section.grade-1 {
+    border-left: 5px solid #f5576c;
+    background: linear-gradient(135deg, #fff5f7 0%, #ffeef0 100%);
+}
+
+.result-section.grade-2 {
+    border-left: 5px solid #4facfe;
+    background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
+}
+
+.result-section.grade-3 {
+    border-left: 5px solid #43e97b;
+    background: linear-gradient(135deg, #f0fff4 0%, #e6ffe6 100%);
+}
+
+.result-section.grade-0 {
+    border-left: 5px solid #fee140;
+    background: linear-gradient(135deg, #fffef0 0%, #fffce6 100%);
+}
+
+.section-title {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 15px;
+    font-weight: 700;
+}
+
+.result-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.result-item {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+}
+
+.result-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.result-item-name {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.result-item-prize {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .title {
+        font-size: 2rem;
+    }
+
+    .container {
+        padding: 30px 20px;
+    }
+
+    .winner-card {
+        padding: 60px 40px;
+        min-width: auto;
+        max-width: 100%;
+    }
+
+    .winner-name {
+        font-size: 2.5rem;
+    }
+
+    .prize-name {
+        font-size: 1.5rem;
+    }
+
+    .next-participant-name {
+        font-size: 1.3rem;
+    }
+
+    .next-label {
+        font-size: 0.85rem;
+    }
+
+    .result-list {
+        grid-template-columns: 1fr;
+    }
+
+    .btn {
+        padding: 12px 30px;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .title {
+        font-size: 1.5rem;
+    }
+
+    .winner-card {
+        padding: 50px 30px;
+        min-width: auto;
+    }
+
+    .winner-name {
+        font-size: 2rem;
+    }
+
+    .prize-name {
+        font-size: 1.3rem;
+    }
+
+    .next-participant-name {
+        font-size: 1.2rem;
+    }
+
+    .next-label {
+        font-size: 0.8rem;
+    }
+}
+

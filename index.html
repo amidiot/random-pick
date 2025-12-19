@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025 한슬 상품 추첨</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Background Animation -->
+    <div class="bg-animation">
+        <div class="bg-gradient"></div>
+        <canvas id="bg-particles"></canvas>
+    </div>
+    
+    <!-- Confetti Canvas -->
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- 시작 화면 -->
+    <div id="start-screen" class="screen active">
+        <div class="container">
+            <h1 class="title">2025 한슬 상품 추첨</h1>
+            <button id="start-btn" class="btn btn-primary">추첨 시작</button>
+        </div>
+    </div>
+
+    <!-- 추첨 진행 화면 -->
+    <div id="drawing-screen" class="screen">
+        <div class="container">
+            <div class="progress-info">
+                <span id="progress-text">1 / 30</span>
+            </div>
+
+            <div id="winner-display" class="winner-display">
+                <div class="winner-card">
+                    <div class="grade-badge" id="grade-badge"></div>
+                    <h2 id="winner-name" class="winner-name"></h2>
+                    <div class="slot-container">
+                        <div class="slot-window">
+                            <div id="prize-slot" class="prize-slot">
+                                <div class="prize-item"></div>
+                                <div class="prize-item"></div>
+                                <div class="prize-item"></div>
+                                <div class="prize-item"></div>
+                                <div class="prize-item"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button id="next-btn" class="btn btn-primary">다음 추첨</button>
+            
+            <div id="next-participant-info" class="next-participant-info">
+                <p class="next-label">다음 추첨자</p>
+                <h3 id="next-participant-name" class="next-participant-name"></h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- 결과 화면 -->
+    <div id="result-screen" class="screen">
+        <div class="container">
+            <h1 class="title">추첨 결과</h1>
+            
+            <div class="results-container">
+                <!-- 1등상 -->
+                <div class="result-section grade-1">
+                    <h2 class="section-title">1등상</h2>
+                    <div id="grade-1-results" class="result-list"></div>
+                </div>
+
+                <!-- 2등상 -->
+                <div class="result-section grade-2">
+                    <h2 class="section-title">2등상</h2>
+                    <div id="grade-2-results" class="result-list"></div>
+                </div>
+
+                <!-- 3등상 -->
+                <div class="result-section grade-3">
+                    <h2 class="section-title">3등상</h2>
+                    <div id="grade-3-results" class="result-list"></div>
+                </div>
+
+                <!-- 일반상품 -->
+                <div class="result-section grade-0">
+                    <h2 class="section-title">일반상품</h2>
+                    <div id="grade-0-results" class="result-list"></div>
+                </div>
+            </div>
+
+            <button id="restart-btn" class="btn btn-primary">다시 시작</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
