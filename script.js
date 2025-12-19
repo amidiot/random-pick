@@ -15,7 +15,7 @@ const prizes = [
     { name: '빵세트🥐', count: 5, grade: 0 },
     { name: '홍삼🌿', count: 6, grade: 0 },
     { name: '스파클링 와인🍷', count: 6, grade: 0 },
-    { name: '베스킨 상품권🍰', count: 5, grade: 0 }
+    { name: '베스킨 상품권 3만원🍰', count: 5, grade: 0 }
 ];
 
 // 상태 관리
