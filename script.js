@@ -11,7 +11,7 @@ const prizes = [
     { name: '에어팟🎧', count: 1, grade: 1 },           // 1등상
     { name: '인터불고 2인 식사권🍽️', count: 1, grade: 2 }, // 2등상
     { name: '로얄 살루트🍾', count: 1, grade: 3 },              // 3등상
-    { name: '가습기🌬️', count: 5, grade: 0 },
+    { name: '탁상용 가습기🌬️', count: 5, grade: 0 },
     { name: '빵세트🥐', count: 5, grade: 0 },
     { name: '홍삼🌿', count: 6, grade: 0 },
     { name: '스파클링 와인🍷', count: 6, grade: 0 },
