@@ -8,14 +8,14 @@ const participants = [
 
 // 상품 목록
 const prizes = [
-    { name: '에어팟', count: 1, grade: 1 },           // 1등상
-    { name: '인터불고 식사 2매', count: 1, grade: 2 }, // 2등상
-    { name: '술', count: 1, grade: 3 },              // 3등상
-    { name: '가습기', count: 5, grade: 0 },
-    { name: '빵세트', count: 5, grade: 0 },
-    { name: '홍삼', count: 6, grade: 0 },
-    { name: '스파클링 와인', count: 6, grade: 0 },
-    { name: '베스킨 케잌', count: 5, grade: 0 }
+    { name: '에어팟🎧', count: 1, grade: 1 },           // 1등상
+    { name: '인터불고 2인 식사권🍽️', count: 1, grade: 2 }, // 2등상
+    { name: '로얄 살루트🍾', count: 1, grade: 3 },              // 3등상
+    { name: '가습기🌬️', count: 5, grade: 0 },
+    { name: '빵세트🥐', count: 5, grade: 0 },
+    { name: '홍삼🌿', count: 6, grade: 0 },
+    { name: '스파클링 와인🍷', count: 6, grade: 0 },
+    { name: '베스킨 상품권🍰', count: 5, grade: 0 }
 ];
 
 // 상태 관리
